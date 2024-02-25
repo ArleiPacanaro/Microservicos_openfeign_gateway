@@ -12,12 +12,19 @@ public class PedidosService {
 
     private EstoquePedidoProducer estoquePedidoProducer;
 
-    public PedidosService(EstoquePedidoProducer estoquePedidoProducer) {
+    private PedidoRepository pedidoRepository;
+
+
+    public PedidosService(EstoquePedidoProducer estoquePedidoProducer,PedidoRepository pedidoRepository) {
         this.estoquePedidoProducer = estoquePedidoProducer;
+        this.pedidoRepository = pedidoRepository;
+
     }
 
     public List<Pedido> getAll(){
-        return this.pedidos;
+
+        return this.pedidoRepository.findAll();
+        //return this.pedidos;
     }
 
 
@@ -34,6 +41,7 @@ public class PedidosService {
             );
 
             this.pedidos.add(pedido);
+            this.pedidoRepository.save(pedido);
         }
         catch (Exception e)
         {

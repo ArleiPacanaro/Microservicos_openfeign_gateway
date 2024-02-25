@@ -1,12 +1,19 @@
 package br.com.organicxpto.pedidos;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 import java.util.UUID;
 
+@Entity
 public class Pedido {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
 	private UUID idCliente;
+
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Item>  itens;
 
 	public Pedido() {
