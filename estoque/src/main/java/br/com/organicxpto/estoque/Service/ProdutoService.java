@@ -23,7 +23,7 @@ public class ProdutoService {
         return produtoRepository.findAll();
     }
 
-    public void criarProduto(ProdutoRequest produtoRequest) {
+    public Produto criarProduto(ProdutoRequest produtoRequest) {
         Produto produto = new Produto();
         produto.setNome(produtoRequest.nome());
         produto.setDescricao(produtoRequest.descricao());
@@ -31,7 +31,36 @@ public class ProdutoService {
         produto.setQuantidade(produtoRequest.quantidade());
         produto.setDataCriacao(LocalDateTime.now());
 
-        produtoRepository.save(produto);
+        return produtoRepository.save(produto);
+    }
+
+    public Produto atualizarPreco(Long id, BigDecimal novoPreco) {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+        produto.setPreco(novoPreco);
+        return produtoRepository.save(produto);
+    }
+
+    public Produto atualizarQuantidade(Long id, int quantidadeParaAdicionar) {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+
+        if (quantidadeParaAdicionar < 0) {
+            throw new IllegalArgumentException("A quantidade não pode ser menor que zero");
+        }
+
+        int novaQuantidade = produto.getQuantidade() + quantidadeParaAdicionar;
+
+        produto.setQuantidade(novaQuantidade);
+        return produtoRepository.save(produto);
+    }
+
+    public void deletarProduto(Long id) {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+
+        if (produto.getQuantidade() != 0) {
+            throw new IllegalStateException("Não é possível excluir o produto pois a quantidade não está zerada.");
+        }
+
+        produtoRepository.delete(produto);
     }
 
     public void removerEstoque(Long idProduto, Integer quantidade) {
